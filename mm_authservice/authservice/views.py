@@ -1,8 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from .models import User
+from django.http import HttpResponse, JsonResponse
+# from .models import User
 
 # Create your views here.
+
+
+def hello(request):
+    return JsonResponse({"message": "Hello, frontend! I am the auth backend."})
 
 
 def index(request):
