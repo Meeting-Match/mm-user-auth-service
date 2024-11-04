@@ -33,24 +33,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserTokenSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
-    links = serializers.SerializerMethodField()
-
-    def get_links(self, obj):
-        return [
-            {
-                'rel': 'self',
-                'href': reverse('token_obtain_pair', request=self.context['request']),
-            },
-            {
-                'rel': 'register',
-                'href': reverse('register', request=self.context['request']),
-            },
-        ]
-
-
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
