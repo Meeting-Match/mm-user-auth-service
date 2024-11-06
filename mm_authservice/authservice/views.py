@@ -1,25 +1,29 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from .models import User
+from django.contrib.auth.models import User
 
-# Create your views here.
-
-
-def hello(request):
-    return JsonResponse({"message": "Hello, frontend! I am the auth backend."})
-
-
-def index(request):
-    return HttpResponse("Hello, world!")
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import UserRegisterSerializer, CustomTokenObtainPairSerializer
 
 
-def register(request):
-    pass
+class UserRegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        response.data['links'] = response.data.pop('links')
+        return response
 
 
-def login(request):
-    pass
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
-
-def logout(request):
-    pass
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        response.data['links'] = response.data.pop('links')
+        return response
