@@ -1,2 +1,4 @@
 venv/
 .env
+Dockerfile
+mm_authservice/mm_authservice/us-east-2-bundle.pem
