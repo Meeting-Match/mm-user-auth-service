@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import environ
+# import environ
 
-# import os
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -101,11 +101,22 @@ DATABASES = {
 }
 
 # DATABASES = {
-# 'default': {
-# 'ENGINE': 'django.db.backends.sqlite3',
-# 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# "default": {
+# "ENGINE": "django.db.backends.mysql",
+# "NAME": env('DB_NAME'),
+# "USER": env('DB_USER'),
+# "PASSWORD": env('DB_PASSWORD'),
+# "HOST": env('DB_HOST'),
+# "PORT": env('DB_PORT'),
 # }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
