@@ -56,3 +56,18 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 'href': reverse('register', request=self.context['request']),
             },
         ]
+
+
+class UserSerializer(serializers.ModelSerializer):
+    url = serializers.URLField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['url', 'id', 'username', 'email']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # or a custom URL if needed
+        representation['url'] = f'http://localhost:8001/userinfo/{
+            instance.id}/'
+        return representation
