@@ -189,9 +189,19 @@ CORS_ALLOW_METHODS = [
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'add_correlation_id': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: setattr(record, 'correlation_id', getattr(record, 'correlation_id', 'N/A')) or True,
+        },
+    },
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {name} {message} [Correlation-ID: {correlation_id}]',
+            'format': '{levelname} {asctime} {module} {message} {correlation_id}',
+            'style': '{',
+        },
+        'default': {
+            'format': '{levelname} {asctime} {message} {correlation_id}',
             'style': '{',
         },
     },
@@ -199,17 +209,23 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
+            'filters': ['add_correlation_id'],  # Attach the filter
         },
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
+            'propagate': True,
         },
-        'authservice': {  # Logger for the auth service
+        'authservice': {  # Logger for the authservice app
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
+    },
+    'root': {  # Catch-all logger
+        'handlers': ['console'],
+        'level': 'INFO',
     },
 }
