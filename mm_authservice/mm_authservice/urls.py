@@ -17,8 +17,15 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+import logging
+
+logger = logging.getLogger("authservice")
+
+logger.info('Initializing project-level URL configuration for mm_authservice.')
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("authservice.urls")),
 ]
+
+logger.info(f"App-level routes included: {['authservice.urls']}")
