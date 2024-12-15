@@ -218,6 +218,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'django.server': {  # Prevent duplicate basehttp logs
+            'handlers': [],
+            'level': 'INFO',
+            'propagate': False,
+        },
         'authservice': {  # Logger for the authservice app
             'handlers': ['console'],
             'level': 'DEBUG',

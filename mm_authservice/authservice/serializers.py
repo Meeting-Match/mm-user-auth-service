@@ -49,8 +49,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
-        correlation_id = cls.context.get('correlation_id', 'N/A') if hasattr(cls, 'context') else 'N/A'
-        logger.info(f'Generating token for user ID: {user.id}', extra={'correlation_id': correlation_id})
         token = super().get_token(user)
         # Add custom claims here, if needed
         return token
@@ -61,6 +59,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         try:
             data = super().validate(attrs)
+            token = self.get_token(self.user)
+            logger.info(f'Generating token for user ID: {self.user.id}', extra={'correlation_id': correlation_id})
+            data.update({'access': str(token.access_token), 'refresh': str(token)})
             data['links'] = self.get_links()
             logger.info(f'Token validated successfully for username: {attrs.get('username')}', extra={'correlation_id': correlation_id})
             return data

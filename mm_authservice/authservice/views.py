@@ -22,6 +22,12 @@ class UserRegisterView(generics.CreateAPIView):
     serializer_class = UserRegisterSerializer
     permission_classes = [AllowAny]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        correlation_id = get_correlation_id(self.request)
+        context['correlation_id'] = correlation_id
+        return context
+
     def create(self, request, *args, **kwargs):
         correlation_id = get_correlation_id(request)
         logger.info(f'User registration request received with data: {request.data}', extra={'correlation_id': correlation_id})
@@ -56,6 +62,12 @@ class UserInfoView(APIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        correlation_id = get_correlation_id(self.request)
+        context['correlation_id'] = correlation_id
+        return context
 
     def post(self, request, *args, **kwargs):
         correlation_id = get_correlation_id(request)
